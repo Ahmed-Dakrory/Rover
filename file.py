@@ -72,8 +72,8 @@ while True:
                 # SendDataOfType(addr,angleNew,bus,0)
                 SteeringAngleBytes = ConvertToBytes(angleNew+1)
                 RobotSpeedBytes = ConvertToBytes(angleNew+2)
-                BrakeValueBytes = ConvertToBytes(angleNew+3)
-                totalPacket = [SteeringAngleBytes[0],SteeringAngleBytes[1],RobotSpeedBytes[0],RobotSpeedBytes[1],BrakeValueBytes[0],BrakeValueBytes[1]]
+                BrakeValueBytes = (95+3)
+                totalPacket = [SteeringAngleBytes[0],SteeringAngleBytes[1],RobotSpeedBytes[0],RobotSpeedBytes[1],BrakeValueBytes]
                 SendDataOfType(addr,totalPacket,bus)
                 print("Heading angle: %s     %s    %s" % (angleOld,angleNew,gyroZ))
             
@@ -117,6 +117,7 @@ while True:
         nodes = []
         #make Different Routing with multiple routing
         node1=routingClass.node(gps.getGpsReadings()[1],gps.getGpsReadings()[2])
+        # node1=routingClass.node(30.0144890,31.1792321)
         print(node1)
         nodes.append(node1)
         for j in range(0,nLocations):

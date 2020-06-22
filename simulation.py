@@ -26,6 +26,8 @@ def ConvertToBytes(data):
     dataToSend = [firstByte,secondByte]
     return dataToSend
 
+
+
 def SendDataOfType(address,data,bus):
     try:
         bus.write_i2c_block_data(address,0,data)
@@ -127,16 +129,21 @@ def sendActionsToMicroController(angleRover,gyroRover, actionDistance, angleActi
     #Send AngleAction Steering
     TotalAction = angleAction + actionRate #Range = 250+180
     SteeringAngle = int(toAnotherRange(TotalAction,-330,330,0,9000))
+    if SteeringAngle>9000:
+        SteeringAngle = 9000
     SteeringAngleBytes = ConvertToBytes(SteeringAngle)
     
     #Send SpeedAction
     RobotSpeed = int(toAnotherRange(actionDistance,0,1000,0,6000))
+    if RobotSpeed>6000:
+        RobotSpeed = 6000
+        
     RobotSpeedBytes = ConvertToBytes(RobotSpeed)
 
     #Send BrakeValue Flag
     BrakeValue = 99
-    BrakeValueBytes = ConvertToBytes(BrakeValue)
-    totalPacket = [SteeringAngleBytes[0],SteeringAngleBytes[1],RobotSpeedBytes[0],RobotSpeedBytes[1],BrakeValueBytes[0],BrakeValueBytes[1]]
+    BrakeValueBytes = (BrakeValue)
+    totalPacket = [SteeringAngleBytes[0],SteeringAngleBytes[1],RobotSpeedBytes[0],RobotSpeedBytes[1],BrakeValueBytes]
     SendDataOfType(addr,totalPacket,bus)
     print("Steering %s,  Speed %s,  BrakeValue %s"%(SteeringAngle,RobotSpeed,BrakeValue))
     
