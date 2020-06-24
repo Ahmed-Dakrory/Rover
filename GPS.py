@@ -6,6 +6,9 @@ import numpy as np
 from time import sleep
 
 import serial
+import time
+
+
 
 class GpsThreadReadings (threading.Thread):
     def __init__(self,GpsReadings):
@@ -14,6 +17,7 @@ class GpsThreadReadings (threading.Thread):
         #self.serialCom = serial.Serial(port='COM3',baudrate=115200)
         self.GpsReadings = GpsReadings
         self.GpsRun = True
+        self.timeBefore = 0
         print("GPS Created")
         
 
@@ -58,11 +62,12 @@ class GpsThreadReadings (threading.Thread):
         GPS_Read = str(data)[2:-5]
 
         try:
+            
             msg = pynmea2.parse(GPS_Read)
             
                 
             if msg.sentence_type == 'GGA' :
-                
+                #print(int(round(time.time() * 1000))-self.timeBefore)
                 #latAv1 =  msg.latitude
                 #longAv1 =  msg.longitude
                 
@@ -85,7 +90,7 @@ class GpsThreadReadings (threading.Thread):
                     
                     #plt.scatter(longAv2, latAv2)
                     #plt.pause(0.001)
-
+                #self.timeBefore = int(round(time.time() * 1000))
                 
         except:
             pass

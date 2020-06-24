@@ -18,7 +18,7 @@ class IMU (threading.Thread):
         self.mpu = mpu6050.MPU6050()
         self.mpu.dmpInitialize()
         self.mpu.setDMPEnabled(True)
-
+        #self.timeBefore = 0
         # get expected DMP packet size for later comparison
         self.packetSize = self.mpu.dmpGetFIFOPacketSize() 
 
@@ -58,6 +58,8 @@ class IMU (threading.Thread):
                     if MAG_Heading > 180:
                         MAG_Heading = MAG_Heading - 360
                     self.Readings ={'Roll':roll,'Pitch':pitch,'Yaw':MAG_Heading}
+                    #print(int(round(time.time() * 1000))-self.timeBefore)
+                    #self.timeBefore = int(round(time.time() * 1000))
                 else:
                     self.Readings = None
 

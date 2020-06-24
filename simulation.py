@@ -9,7 +9,7 @@ import utm
 
 import pyproj
 import struct
-
+import time
 geodesic = pyproj.Geod(ellps='WGS84')
 
 def convertNumberIntoAsciValue(valueToConvert):
@@ -92,14 +92,15 @@ def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routing
     notReachEndPoint = True
     
     indexCurrentTargetPoint = (len(listOfPoints)-1)
-
+    #timeBefore = 0
     while notReachEndPoint:
         
 
         if imu.Readings !=None and imu.Rates !=None:
             angleRover = imu.Readings['Yaw']
             gyroRover = imu.Rates['gz']
-
+            #print(int(round(time.time() * 1000))-timeBefore)
+            #timeBefore = int(round(time.time() * 1000))
         
             [actionDistance, angleAction,actionRate] = calculateControlAction(KpDistance,KpAngle,KpRate,Gps,listOfPoints,indexCurrentTargetPoint,angleRover,gyroRover)
             
@@ -111,7 +112,7 @@ def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routing
             notReachEndPoint = checkIfNotReachedEndPoint(indexCurrentTargetPoint)
             
             sendActionsToMicroController(angleRover,gyroRover,actionDistance, angleAction,actionRate,addr,bus)
-            #print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, GPS: %f, i: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[1],indexCurrentTargetPoint))
+            print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, GPS: %f, i: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[1],indexCurrentTargetPoint))
 
 def sendActionsToMicroController(angleRover,gyroRover, actionDistance, angleAction,actionRate,addr,bus):
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue('#'),bus)
@@ -125,7 +126,7 @@ def sendActionsToMicroController(angleRover,gyroRover, actionDistance, angleActi
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue(';'),bus)
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue(actionRate),bus)
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue('!'),bus)
-
+    
     #Send AngleAction Steering
     TotalAction = angleAction + actionRate #Range = 250+180
     SteeringAngle = int(toAnotherRange(TotalAction,-330,330,0,9000))
@@ -145,7 +146,7 @@ def sendActionsToMicroController(angleRover,gyroRover, actionDistance, angleActi
     BrakeValueBytes = (BrakeValue)
     totalPacket = [SteeringAngleBytes[0],SteeringAngleBytes[1],RobotSpeedBytes[0],RobotSpeedBytes[1],BrakeValueBytes]
     SendDataOfType(addr,totalPacket,bus)
-    print("Steering %s,  Speed %s,  BrakeValue %s"%(SteeringAngle,RobotSpeed,BrakeValue))
+    # print("Steering %s,  Speed %s,  BrakeValue %s"%(SteeringAngle,RobotSpeed,BrakeValue))
     
     
 def goToNextTargetOrNot(listOfPoints,Gps,indexOfCurrentTarget):
