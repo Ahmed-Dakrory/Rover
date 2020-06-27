@@ -10,6 +10,7 @@ import utm
 import pyproj
 import struct
 import time
+
 geodesic = pyproj.Geod(ellps='WGS84')
 
 def convertNumberIntoAsciValue(valueToConvert):
@@ -30,7 +31,7 @@ def ConvertToBytes(data):
 
 def SendDataOfType(address,data,bus):
     try:
-        bus.write_i2c_block_data(address,0,data)
+        bus.write_i2c_block_data(address,255,data)
     except:
         pass
 
@@ -82,9 +83,11 @@ def getDistanceFromLatLonInMeter(point1,point2) :
 def deg2rad(deg):
     return deg * (math.pi/180)
 
-def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routingClass,listOfPoints,bus,addr,imu):
+def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routingClass,listOfPoints,bus,addr,imu,smbusReader):
     #get the first Point which is the nabour Point to me
     #get the GPS Point Here
+    totalPacketBefore =[]
+    sendData = True
     currPointGPS = routingClass.node(Gps.getGpsReadings()[1],Gps.getGpsReadings()[2])
     indexFirstTarget = len(listOfPoints) - 1
     indexSecondTarget = goToNextTargetOrNot(listOfPoints,Gps,indexFirstTarget)
@@ -95,6 +98,19 @@ def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routing
     #timeBefore = 0
     while notReachEndPoint:
         
+        if smbusReader.DataExist:
+            data = smbusReader.Data
+            smbusReader.DataExist = False
+            if data == "F":
+                sendActionsToMicroController(totalPacketBefore,0,0,0, 0,0,3,addr,bus)
+                break
+            elif data == "S":
+                sendData = True
+            elif data == "B":
+                sendData = False
+
+
+            
 
         if imu.Readings !=None and imu.Rates !=None:
             angleRover = imu.Readings['Yaw']
@@ -110,11 +126,15 @@ def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routing
             
             indexCurrentTargetPoint = goToNextTargetOrNot(listOfPoints,Gps,indexCurrentTargetPoint)
             notReachEndPoint = checkIfNotReachedEndPoint(indexCurrentTargetPoint)
-            
-            sendActionsToMicroController(angleRover,gyroRover,actionDistance, angleAction,actionRate,addr,bus)
-            print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, GPS: %f, i: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[1],indexCurrentTargetPoint))
+            if not notReachEndPoint:
+                totalPacket = sendActionsToMicroController(totalPacketBefore, 0,0,0, 0,0,99,addr,bus)
+                print("You Reached")
+            elif sendData:
+                totalPacket = sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover,actionDistance, angleAction,actionRate,0,addr,bus)
+                totalPacketBefore = totalPacket
+                print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, GPS: %f, i: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[1],indexCurrentTargetPoint))
 
-def sendActionsToMicroController(angleRover,gyroRover, actionDistance, angleAction,actionRate,addr,bus):
+def sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover, actionDistance, angleAction,actionRate,BrakeValue,addr,bus):
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue('#'),bus)
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue(angleRover),bus)
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue('&'),bus)
@@ -135,17 +155,22 @@ def sendActionsToMicroController(angleRover,gyroRover, actionDistance, angleActi
     SteeringAngleBytes = ConvertToBytes(SteeringAngle)
     
     #Send SpeedAction
-    RobotSpeed = int(toAnotherRange(actionDistance,0,1000,0,6000))
-    if RobotSpeed>6000:
-        RobotSpeed = 6000
+    RobotSpeed = int(toAnotherRange(actionDistance,0,1000,31000,62000))
+    if RobotSpeed>62000:
+        RobotSpeed = 62000
+    if RobotSpeed<31000:
+        RobotSpeed = 31000
         
     RobotSpeedBytes = ConvertToBytes(RobotSpeed)
 
     #Send BrakeValue Flag
-    BrakeValue = 99
     BrakeValueBytes = (BrakeValue)
     totalPacket = [SteeringAngleBytes[0],SteeringAngleBytes[1],RobotSpeedBytes[0],RobotSpeedBytes[1],BrakeValueBytes]
-    SendDataOfType(addr,totalPacket,bus)
+    
+    comparison = totalPacket == totalPacketBefore
+    if not comparison:
+        SendDataOfType(addr,totalPacket,bus)
+    return totalPacket
     # print("Steering %s,  Speed %s,  BrakeValue %s"%(SteeringAngle,RobotSpeed,BrakeValue))
     
     

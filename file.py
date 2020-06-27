@@ -22,7 +22,7 @@ def ConvertToBytes(data):
 
 def SendDataOfType(address,data,bus):
     try:
-        bus.write_i2c_block_data(address,0,data)
+        bus.write_i2c_block_data(address,255,data)
     except:
         pass
 

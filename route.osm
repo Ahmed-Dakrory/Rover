@@ -14,14 +14,7 @@
 <node id="4975103" lat="30.014441" lon="31.178885" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
 <node id="5975103" lat="30.014486" lon="31.178877" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
 <node id="6975103" lat="30.014530" lon="31.178868" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="6395307588103" lat="30.014557" lon="31.178846" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="11975103" lat="30.014561" lon="31.178891" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="12975103" lat="30.014566" lon="31.178936" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="13975103" lat="30.014571" lon="31.178981" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="14975103" lat="30.014576" lon="31.179026" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="15975103" lat="30.014580" lon="31.179072" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="16975103" lat="30.014585" lon="31.179117" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="3958768036103" lat="30.014608" lon="31.179164" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
+<node id="6395307588103" lat="30.014574" lon="31.178847" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
  <way id="348553335" version="10" timestamp="2019-04-08T04:19:00Z" changeset="99992695" uid="9990114" user="The_Plateau">
 <nd ref="6405822201103"/>
 <nd ref="1975103"/>
@@ -31,13 +24,6 @@
 <nd ref="5975103"/>
 <nd ref="6975103"/>
 <nd ref="6395307588103"/>
-<nd ref="11975103"/>
-<nd ref="12975103"/>
-<nd ref="13975103"/>
-<nd ref="14975103"/>
-<nd ref="15975103"/>
-<nd ref="16975103"/>
-<nd ref="3958768036103"/>
 </way>
 
  </osm>
