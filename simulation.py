@@ -97,12 +97,20 @@ def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routing
     indexCurrentTargetPoint = (len(listOfPoints)-1)
     #timeBefore = 0
     while notReachEndPoint:
+        FixMode = Gps.getGpsReadings()[3]
+        ErrorInGps = Gps.getGpsReadings()[5]
+        ErrorInGps = int(toAnotherRange(ErrorInGps,0,10,3,253))
+        if ErrorInGps > 253:
+            ErrorInGps = 253
+
+        if ErrorInGps < 0:
+            ErrorInGps = 0
         
         if smbusReader.DataExist:
             data = smbusReader.Data
             smbusReader.DataExist = False
             if data == "F":
-                sendActionsToMicroController(totalPacketBefore,0,0,0, 0,0,3,addr,bus)
+                sendActionsToMicroController(totalPacketBefore,0,0,0, 0,0,2,FixMode,addr,bus)
                 break
             elif data == "S":
                 sendData = True
@@ -127,14 +135,14 @@ def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routing
             indexCurrentTargetPoint = goToNextTargetOrNot(listOfPoints,Gps,indexCurrentTargetPoint)
             notReachEndPoint = checkIfNotReachedEndPoint(indexCurrentTargetPoint)
             if not notReachEndPoint:
-                totalPacket = sendActionsToMicroController(totalPacketBefore, 0,0,0, 0,0,99,addr,bus)
+                totalPacket = sendActionsToMicroController(totalPacketBefore, 0,0,0, 0,0,254,FixMode,addr,bus)
                 print("You Reached")
             elif sendData:
-                totalPacket = sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover,actionDistance, angleAction,actionRate,0,addr,bus)
+                totalPacket = sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover,actionDistance, angleAction,actionRate,ErrorInGps,FixMode,addr,bus)
                 totalPacketBefore = totalPacket
-                print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, GPS: %f, i: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[1],indexCurrentTargetPoint))
+                print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, Fix: %f, i: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[3],indexCurrentTargetPoint))
 
-def sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover, actionDistance, angleAction,actionRate,BrakeValue,addr,bus):
+def sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover, actionDistance, angleAction,actionRate,BrakeValue,FixMode,addr,bus):
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue('#'),bus)
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue(angleRover),bus)
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue('&'),bus)
@@ -165,7 +173,7 @@ def sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover, action
 
     #Send BrakeValue Flag
     BrakeValueBytes = (BrakeValue)
-    totalPacket = [SteeringAngleBytes[0],SteeringAngleBytes[1],RobotSpeedBytes[0],RobotSpeedBytes[1],BrakeValueBytes]
+    totalPacket = [SteeringAngleBytes[0],SteeringAngleBytes[1],RobotSpeedBytes[0],RobotSpeedBytes[1],BrakeValueBytes,FixMode]
     
     comparison = totalPacket == totalPacketBefore
     if not comparison:

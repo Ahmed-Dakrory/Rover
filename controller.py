@@ -46,22 +46,25 @@ imu.start()
 
 ##node2=routingClass.node(51.9284338,4.4893559)
             
-GpsData = [0,0,0]
+GpsData = [0,0,0,0,0,0]
 
 gps = gps.GpsThreadReadings(GpsData)
 gps.start()
 
 smbusReader = smbusReader.smbusRead(bus,addr)
 smbusReader.start()
+routingMode = 1 #int(input("Press 1 for cycle mode or 2 for car mode: "))
+
+if routingMode == 1:
+    routingClass = RoutingUsage("cycle")
+if routingMode == 2:
+    routingClass = RoutingUsage("car")
+print("Loading the Map")
+routingClass.getMap(0,0)
 
 while True:
     print("Lets Start------------------>")
-    routingMode = 1 #int(input("Press 1 for cycle mode or 2 for car mode: "))
-
-    if routingMode == 1:
-        routingClass = RoutingUsage("cycle")
-    if routingMode == 2:
-        routingClass = RoutingUsage("car")
+    
     sleep(2)
     nodes = []
     #make Different Routing with multiple routing
@@ -102,6 +105,7 @@ while True:
 
     if queueNodesNewRight == None:
         print("No Path for on of the Paths")
+        sim.sendActionsToMicroController([],0,0,0, 0,0,255,gps.getGpsReadings()[3],addr,bus)
     else:
         f= open("route.osm","w+")
 
@@ -123,6 +127,8 @@ while True:
         f.write("</way>\r\n\r\n </osm>\r\n")
         f.close()
         listOfPoints = queueNodesNewRight[0][0] 
-
+        
+        print('Finish Routing')
+        print('Start Navigation')
         sim.mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,gps,routingClass,listOfPoints,bus,addr,imu,smbusReader)
 

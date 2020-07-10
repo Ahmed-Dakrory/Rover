@@ -110,7 +110,15 @@ class Datastore:
         """Initialise an OSM-file parser"""
         # Routing data
         self.routing = {}
+
+        
         self.ways = {}
+
+        # 0 minlat
+        # 1 minlon
+        # 2 maxlat
+        # 3 maxlon
+        self.boundsOfMap = {}
         self.rnodes = {}
         self.mandatoryMoves = {}
         self.forbiddenMoves = set()
@@ -239,7 +247,11 @@ class Datastore:
 
                 if elem.tag == "node":
                     nodes[data["id"]] = data
-
+                elif elem.tag == "bounds":
+                    self.boundsOfMap[0] = data["minlat"]
+                    self.boundsOfMap[1] = data["minlon"]
+                    self.boundsOfMap[2] = data["maxlat"]
+                    self.boundsOfMap[3] = data["maxlon"]
                 # Store only potentially routable ways
                 elif elem.tag == "way" and (data["tag"].get("highway") or data["tag"].get("lanes") or data["tag"].get("maxspeed") or data["tag"].get("railway")):
                     data["nd"] = [int(i.attrib["ref"]) for i in elem.iter("nd")]
@@ -422,7 +434,8 @@ class Datastore:
     def findNode(self, lat, lon):
         """Find the nearest node that can be the start of a route"""
         # Get area around location we're trying to find
-        self.getArea(lat, lon)
+        # Here i remove this
+        # self.getArea(lat, lon)
         maxDist, closestNode = math.inf, None
 
         # Iterate over nodes and overwrite closest_node if it's closer
@@ -438,6 +451,20 @@ class Datastore:
         """Display some info about the loaded data"""
         print("Loaded %d nodes" % len(list(self.rnodes.keys())))
         print("Loaded %d %s routes" % (len(list(self.routing.keys())), self.transport))
+
+    def getPointInBounds(self,lat, lon):
+        # 0 minlat
+        # 1 minlon
+        # 2 maxlat
+        # 3 maxlon
+        # print("%s > %s"%(lat,float(self.boundsOfMap[0])))
+        # print("%s < %s"%(lat,float(self.boundsOfMap[2])))
+        # print("%s > %s"%(lon,float(self.boundsOfMap[1])))
+        # print("%s < %s"%(lon,float(self.boundsOfMap[3])))
+        if lat > float(self.boundsOfMap[0]) and lat < float(self.boundsOfMap[2]) and lon > float(self.boundsOfMap[1]) and lon < float(self.boundsOfMap[3]):
+            return True
+        else:
+            return False
 
 class Router(Datastore):
     def __getattr__(self, name):
@@ -536,7 +563,8 @@ class Router(Datastore):
                 return
 
             # Get data around end node
-            self.getArea(self.rnodes[end][0], self.rnodes[end][1])
+            # Here i remove this
+            # self.getArea(self.rnodes[end][0], self.rnodes[end][1])
 
             # Ignore if route is not traversible
             if weight == 0:

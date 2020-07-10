@@ -6,7 +6,10 @@ class RoutingUsage:
     
     def node(self,lat,longit):
         return [lat,longit]
-    
+
+    def getMap(self,lat,longit):
+        self.router.getArea(lat,longit) #Load map for only checking
+
     def getRouteMultiple(self,nodesNew):
         queueNodesNewRight = []
         for index in range(0,len(nodesNew)-1):
@@ -37,18 +40,34 @@ class RoutingUsage:
         return nodes
 
     def getTheRouteBetweenTwoNodes(self,lat1,long1,lat2,long2):
+        print('Check Points in the maps Stage .....')
         
-
-        start = self.router.findNode(lat1,long1) # Find start and end nodes
-        end = self.router.findNode(lat2,long2)
-
-##        print("start : %s,   Lat: %s,  Lon: %s "% (start,lat1,long1))
-##        print("end : %s,   Lat: %s,  Lon: %s "% (end,lat2,long2))
         
+        checkStart = self.router.getPointInBounds(lat1,long1) # Check if the two points in the map
 
-        status, route = self.router.doRoute(start, end) # Find the route - a list of OSM nodes
 
+        checkEnd = self.router.getPointInBounds(lat2,long2)
+        # print(checkStart)
+        # print(checkEnd)
+
+        if checkStart and checkEnd:
+            print('Continue Routing Find Near Points Stage .....')
+            start = self.router.findNode(lat1,long1) # Find start and end nodes
+            end = self.router.findNode(lat2,long2)
+            
+            print('Continue Routing one Path Stage .....')
+
+    ##        print("start : %s,   Lat: %s,  Lon: %s "% (start,lat1,long1))
+    ##        print("end : %s,   Lat: %s,  Lon: %s "% (end,lat2,long2))
+            
+
+            status, route = self.router.doRoute(start, end) # Find the route - a list of OSM nodes
+        else:
+            print('outside Map Range')
+            status = 'outOfRange'
+            
         if status == 'success':
+            print('Continue Routing Successing Stage.....')
             routeLatLons = list(map(self.router.nodeLatLon, route)) # Get actual route coordinates
             
             # list the lat/long
@@ -98,7 +117,8 @@ class RoutingUsage:
             
             queueNodesNewRight = []
            
-                
+            
+            print('Continue Routing Shifting Stage.....')
             for index, obj in enumerate(queueNodes):
                
                 lV = len(queueNodes)

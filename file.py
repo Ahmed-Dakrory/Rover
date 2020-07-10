@@ -45,7 +45,7 @@ imu.start()
 
 ##node2=routingClass.node(51.9284338,4.4893559)
             
-GpsData = [0,0,0]
+GpsData = [0,0,0,0,0,0]
 
 gps = gps.GpsThreadReadings(GpsData)
 gps.start()
@@ -57,8 +57,11 @@ while True:
         while True:
             lat = gps.getGpsReadings()[1]
             lon = gps.getGpsReadings()[2]
+            fixMode = gps.getGpsReadings()[3]
+            HDOP = gps.getGpsReadings()[4]
+            Error = gps.getGpsReadings()[5]
             x , y, Z_N,Ltt = utm.from_latlon(lat, lon)
-            print("X: %s ,Y: %s  lat: %s ,lon: %s" % (x, y,lat,lon))
+            print("X: %s ,Y: %s  lat: %s ,lon: %s ,fixMode: %s ,Error: %s" % (x, y,lat,lon,fixMode,Error))
             
             sleep(0.1)
             

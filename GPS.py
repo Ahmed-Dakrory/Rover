@@ -10,6 +10,13 @@ import time
 
 
 
+# 0 Reading not used
+# 1 is Latitudel
+# 2 is longitude
+# 3 is FixMode
+# 4 HDOP
+# 5 Error in meter
+
 class GpsThreadReadings (threading.Thread):
     def __init__(self,GpsReadings):
         super(GpsThreadReadings , self).__init__(name="GPS thread")
@@ -32,7 +39,7 @@ class GpsThreadReadings (threading.Thread):
             #self.GpsReadings[1] = self.GpsReadings[1] - self.defLat*0.5
             #self.GpsReadings[2] = self.GpsReadings[2] - self.defLong*0.5
             #sleep(0.01)
-            self.GpsReadings = self.readGPS(self.GpsReadings[0],self.GpsReadings[1],self.GpsReadings[2])
+            self.GpsReadings = self.readGPS(self.GpsReadings[0],self.GpsReadings[1],self.GpsReadings[2],self.GpsReadings[3],self.GpsReadings[4],self.GpsReadings[5])
 
     def calAngle(self,lat1,long1,lat2,long2):
         dy = lat2 - lat1
@@ -57,7 +64,7 @@ class GpsThreadReadings (threading.Thread):
         return d*1000
 
 
-    def readGPS(self,angle,latAv2,longAv2):
+    def readGPS(self,angle,latAv2,longAv2,FixMode,hdop,error):
         data = self.serialCom.readline()
         GPS_Read = str(data)[2:-5]
 
@@ -73,6 +80,14 @@ class GpsThreadReadings (threading.Thread):
                 
                 latAv2 =  msg.latitude
                 longAv2 =  msg.longitude
+                FixMode = msg.gps_qual
+
+            if msg.sentence_type == 'GSA' :
+                hdop =  msg.hdop
+                if FixMode == 0 or FixMode == 1 or FixMode == 2 or FixMode == 6:
+                    error = float(float(hdop) * 2.5)
+                if FixMode == 4 or FixMode == 5:
+                    error = float(float(hdop) *  0.01)
                 #distance = self.getDistanceFromLatLonInKm(latAv1,longAv1,latAv2,longAv2)
                 
 
@@ -95,7 +110,7 @@ class GpsThreadReadings (threading.Thread):
         except:
             pass
         #return [angle,latAv2,longAv2]
-        return [0,latAv2,longAv2]
+        return [0,latAv2,longAv2,FixMode,hdop,error]
 
 
 

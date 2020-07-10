@@ -16,11 +16,11 @@
 
   COMMANDS THAT I RECIVE FROM YOU:
  ** BRAKE VALUES:
-  0 EVERY THING IS OK
-  1 STOPE THE DROID BECASUE OF WEEK SIGNAL FROM GPS
-  2 STOPE THE DROID BECASUE YOU ARE AWAY FROM THE ORIGINAL PATH AND CAN NOT BE CORRECTED
-  3 STOPE THE DROID BECASUE YOU ARE DOING RE ROUTING
-  99 End of mission
+  0 STOPE THE DROID BECASUE OF WEEK SIGNAL FROM GPS
+  1 STOPE THE DROID BECASUE YOU ARE AWAY FROM THE ORIGINAL PATH AND CAN NOT BE CORRECTED
+  2 STOPE THE DROID BECASUE YOU ARE DOING RE ROUTING
+  3 - 253 Error from 0 to 10 meter 3 mean less than one meter and 253 mean higher than 100 meter
+  254 End of mission
   .
   .
 
@@ -36,6 +36,16 @@
   if you need a zero speed you will send me 31000 command
   +values for forwared speed and negative ones for reverse
 
+  
+  ** Fix Mode
+  
+  0=Invalid
+  1=2D/3D
+  2=DGNSS
+  4=Fixed RTK
+  5=Float RTK
+  6=Dead Reckoning
+
 */
 #include <Wire.h>
 
@@ -48,9 +58,10 @@ long timeBefore = 0;
 uint16_t SteeringAngle = 0;
 uint16_t RobotSpeed = 0;
 uint16_t BrakeValue = 0;
+uint16_t FixModeValue = 0;
 float angle_steering = 0.0;
 
-byte byteStruct[6];
+byte byteStruct[7];
 String cordinates;
 void setup() {
   
@@ -117,9 +128,9 @@ void loop() {
 void receiveEvent(int howMany) {
   
   timeBefore = micros();
-  if (Wire.available() >= 6)
+  if (Wire.available() == 7)
   {
-    for (int i = 0; i < 6; i++){
+    for (int i = 0; i < 7; i++){
       byteStruct[i] = Wire.read();
     }
     
@@ -130,8 +141,9 @@ void receiveEvent(int howMany) {
       RobotSpeed = (byteStruct[3] << 8) | byteStruct[4];
       RobotSpeed -= 31000;
       BrakeValue = (byteStruct[5]);
+    FixModeValue = (byteStruct[6]);
 
-      if (micros() - timeBefore > 5)
+      if (micros() - timeBefore > 15)
       {
         Serial.print("ERROR TIME!!!!!!=");
         Serial.println(micros() - timeBefore);
@@ -147,14 +159,20 @@ void receiveEvent(int howMany) {
         Serial.print("\t");
         Serial.print(BrakeValue);
         Serial.print("\t");
+        Serial.print(FixModeValue);
+        Serial.print("\t");
         Serial.println(howMany);
       }
     }
     else
       G_Error[0]++;//wrong gps header
   }
-  else//why i am here
+  else if(Wire.available()>7){
+    //why i am here
     G_Error[1]++;//more bytes than expected
+    Serial.println(Wire.available());
+  }
+    
 }
 
 void sendNumberOfLocations(String da){
