@@ -47,7 +47,6 @@ first make sure for the directions to be as shown
 
 
 ## Setup and Running
-_
 
 First when you run this code
 > python3 controller.py
@@ -78,7 +77,7 @@ you can Run Navigation by send **S** to Teensy
 to get out of this mission and start a new mission just send F to Teensy, then send the GPS locations again and so on
 
 
-the fix mode and the error is descriped in the Arduino files_
+the fix mode and the error is descriped in the Arduino files
 
 
 # Have fun :)
