@@ -62,7 +62,7 @@ if you will send two points
 > lat,long;lat2,long2G
 
 
-### Note: Not Maximum point than two points
+**Note:** No Maximum point than two points
 
 
 the system will handle those points and check if they will be inside the map then it will run the routing if ok, else send a Brake value equal to **255**
