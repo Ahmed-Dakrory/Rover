@@ -49,6 +49,7 @@ first make sure for the directions to be as shown
 ## Setup and Running
 
 ``` 
+``` 
 
 First when you run this code
 > python3 controller.py
@@ -62,6 +63,7 @@ if you will send one point
 
 if you will send two points
 > lat,long;lat2,long2G
+
 
 ### Note: Not Maximum point than two points
 
@@ -80,6 +82,9 @@ to get out of this mission and start a new mission just send F to Teensy, then s
 
 the fix mode and the error is descriped in the Arduino files
 
-Have fun :)
 
-```
+``` 
+``` 
+
+# Have fun :)
+
