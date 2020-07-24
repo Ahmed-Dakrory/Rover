@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Python Standard Library Imports
-import smbus
+import smbus2 as smbus
 
 # External Imports
 pass

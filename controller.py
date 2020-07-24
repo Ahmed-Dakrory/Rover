@@ -12,7 +12,7 @@ from imuDev.MpuRm3100 import IMU
 
     
     
-from smbus import SMBus
+from smbus2 import SMBus
 import struct
 
 def ConvertToBytes(data):

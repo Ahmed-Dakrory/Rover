@@ -140,7 +140,7 @@ def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routing
             elif sendData:
                 totalPacket = sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover,actionDistance, angleAction,actionRate,ErrorInGps,FixMode,addr,bus)
                 totalPacketBefore = totalPacket
-                print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, Fix: %f, i: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[3],indexCurrentTargetPoint))
+                print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, Fix: %f, i: %f, all: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[3],indexCurrentTargetPoint,len(listOfPoints)))
 
 def sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover, actionDistance, angleAction,actionRate,BrakeValue,FixMode,addr,bus):
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue('#'),bus)
@@ -185,6 +185,7 @@ def sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover, action
 def goToNextTargetOrNot(listOfPoints,Gps,indexOfCurrentTarget):
     targetPoint = [listOfPoints[indexOfCurrentTarget][1],listOfPoints[indexOfCurrentTarget][2]]
     #Adjust this Parameter to get the best Performance
+    # print(getDistanceFromLatLonInMeter([Gps.getGpsReadings()[1],Gps.getGpsReadings()[2]],targetPoint))
     if getDistanceFromLatLonInMeter([Gps.getGpsReadings()[1],Gps.getGpsReadings()[2]],targetPoint) < 0.1:
         del listOfPoints[indexOfCurrentTarget]
 

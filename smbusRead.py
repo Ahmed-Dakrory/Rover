@@ -1,6 +1,6 @@
 
 import threading
-from smbus import SMBus
+from smbus2 import SMBus
 
 from time import sleep
 class smbusRead (threading.Thread):
