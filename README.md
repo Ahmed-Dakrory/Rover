@@ -36,10 +36,14 @@ SCK --> SCLK
 The Teensy to RPI
 18(A4) --> SDA
 19(A5) --> SCL
+
+0 (RX1) --> GPIO14(TX) 
+1 (TX1) --> GPIO15(RX)
+
 GND --> GND
 
 first make sure for the directions to be as shown
-
+also, make sure that the SPI, UART, and I2C work also not enable UART through SSH
 
 ```
 
