@@ -2,7 +2,8 @@ from Routing import RoutingUsage # Import the router
 import simulation as sim
 import utm
 import GPS as gps# Import the router
-import smbusRead as smbusReader
+# import smbusRead as smbusReader
+import serialBus as serialBus
 
 from time import sleep
 
@@ -51,8 +52,14 @@ GpsData = [0,0,0,0,0,0]
 gps = gps.GpsThreadReadings(GpsData)
 gps.start()
 
-smbusReader = smbusReader.smbusRead(bus,addr)
-smbusReader.start()
+
+# if you want to enable SPI communication Uncomment this
+# smbusReader = smbusReader.smbusRead(bus,addr)
+# smbusReader.start()
+
+serialReader = serialBus.serialBus()
+serialReader.start()
+
 routingMode = 1 #int(input("Press 1 for cycle mode or 2 for car mode: "))
 
 if routingMode == 1:
@@ -74,8 +81,8 @@ while True:
     nodes.append(node1)
 
     while True:
-        if smbusReader.DataExist:
-            Locations = smbusReader.Data.split(";")
+        if serialReader.DataExist:
+            Locations = serialReader.Data.split(";")
             nLocations = len(Locations)
             print("You Will Go to %s Location" % (nLocations))
             for j in range(0,nLocations):
@@ -86,7 +93,7 @@ while True:
                 nodeNext=routingClass.node(latNext,longNext)
                 #nodeNext=routingClass.node(51.9284338,4.4893559)
                 nodes.append(nodeNext)
-            smbusReader.DataExist = False
+            serialReader.DataExist = False
             break
     # nLocations = int(input("Press Number Of Locations: "))
     
@@ -130,5 +137,5 @@ while True:
         
         print('Finish Routing')
         print('Start Navigation')
-        sim.mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,gps,routingClass,listOfPoints,bus,addr,imu,smbusReader)
+        sim.mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,gps,routingClass,listOfPoints,bus,addr,imu,serialReader)
 

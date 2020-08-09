@@ -83,7 +83,7 @@ def getDistanceFromLatLonInMeter(point1,point2) :
 def deg2rad(deg):
     return deg * (math.pi/180)
 
-def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routingClass,listOfPoints,bus,addr,imu,smbusReader):
+def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routingClass,listOfPoints,bus,addr,imu,serialBus):
     #get the first Point which is the nabour Point to me
     #get the GPS Point Here
     totalPacketBefore =[]
@@ -106,15 +106,15 @@ def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routing
         if ErrorInGps < 0:
             ErrorInGps = 0
         
-        if smbusReader.DataExist:
-            data = smbusReader.Data
-            smbusReader.DataExist = False
-            if data == "F":
-                sendActionsToMicroController(totalPacketBefore,0,0,0, 0,0,2,FixMode,addr,bus)
+        if serialBus.DataExist:
+            data = serialBus.Data
+            serialBus.DataExist = False
+            if data == "FF":
+                sendActionsToMicroController(serialBus,totalPacketBefore,0,0,0, 0,0,2,FixMode,addr,bus)
                 break
-            elif data == "S":
+            elif data == "SS":
                 sendData = True
-            elif data == "B":
+            elif data == "BB":
                 sendData = False
 
 
@@ -135,14 +135,14 @@ def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routing
             indexCurrentTargetPoint = goToNextTargetOrNot(listOfPoints,Gps,indexCurrentTargetPoint)
             notReachEndPoint = checkIfNotReachedEndPoint(indexCurrentTargetPoint)
             if not notReachEndPoint:
-                totalPacket = sendActionsToMicroController(totalPacketBefore, 0,0,0, 0,0,254,FixMode,addr,bus)
+                totalPacket = sendActionsToMicroController(serialBus,totalPacketBefore, 0,0,0, 0,0,254,FixMode,addr,bus)
                 print("You Reached")
             elif sendData:
-                totalPacket = sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover,actionDistance, angleAction,actionRate,ErrorInGps,FixMode,addr,bus)
+                totalPacket = sendActionsToMicroController(serialBus,totalPacketBefore, angleRover,gyroRover,actionDistance, angleAction,actionRate,ErrorInGps,FixMode,addr,bus)
                 totalPacketBefore = totalPacket
-                print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, Fix: %f, i: %f, all: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[3],indexCurrentTargetPoint,len(listOfPoints)))
+                # print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, Fix: %f, i: %f, all: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[3],indexCurrentTargetPoint,len(listOfPoints)))
 
-def sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover, actionDistance, angleAction,actionRate,BrakeValue,FixMode,addr,bus):
+def sendActionsToMicroController(serialBus,totalPacketBefore, angleRover,gyroRover, actionDistance, angleAction,actionRate,BrakeValue,FixMode,addr,bus):
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue('#'),bus)
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue(angleRover),bus)
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue('&'),bus)
@@ -173,11 +173,12 @@ def sendActionsToMicroController(totalPacketBefore, angleRover,gyroRover, action
 
     #Send BrakeValue Flag
     BrakeValueBytes = (BrakeValue)
-    totalPacket = [SteeringAngleBytes[0],SteeringAngleBytes[1],RobotSpeedBytes[0],RobotSpeedBytes[1],BrakeValueBytes,FixMode]
+    totalPacket = [255,SteeringAngleBytes[0],SteeringAngleBytes[1],RobotSpeedBytes[0],RobotSpeedBytes[1],BrakeValueBytes,FixMode]
     
     comparison = totalPacket == totalPacketBefore
     if not comparison:
-        SendDataOfType(addr,totalPacket,bus)
+        serialBus.SendDataOfType(totalPacket)
+        # SendDataOfType(addr,totalPacket,bus)
     return totalPacket
     # print("Steering %s,  Speed %s,  BrakeValue %s"%(SteeringAngle,RobotSpeed,BrakeValue))
     
