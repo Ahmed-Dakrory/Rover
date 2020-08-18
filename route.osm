@@ -7,27 +7,27 @@
 <meta osm_base="2019-07-22T12:50:02Z"/>
 
   <bounds minlat="30.0059000" minlon="31.1707000" maxlat="30.0271000" maxlon="31.2036000"/>
-<node id="-14103" lat="29.944531" lon="31.066589" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="-31103" lat="29.944531" lon="31.066583" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="-32103" lat="29.944541" lon="31.066582" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="-33103" lat="29.944549" lon="31.066583" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="-34103" lat="29.944555" lon="31.066590" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="-35103" lat="29.944554" lon="31.066602" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="-36103" lat="29.944557" lon="31.066612" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="-37103" lat="29.944535" lon="31.066628" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="-38103" lat="29.944546" lon="31.066645" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
-<node id="-39103" lat="29.944562" lon="31.066651" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
+<node id="-41103" lat="29.944051" lon="31.066590" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
+<node id="-43103" lat="29.944054" lon="31.066590" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
+<node id="-44103" lat="29.944057" lon="31.066588" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
+<node id="-45103" lat="29.944059" lon="31.066592" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
+<node id="-46103" lat="29.944059" lon="31.066597" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
+<node id="-47103" lat="29.944061" lon="31.066599" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
+<node id="-48103" lat="29.944054" lon="31.066610" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
+<node id="-49103" lat="29.944058" lon="31.066617" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
+<node id="-50103" lat="29.944070" lon="31.066620" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
+<node id="-51103" lat="29.944070" lon="31.066610" version="2" timestamp="2019-05-10T12:30:39Z" changeset="70107889" uid="9535075" user="JacksonWard"/>
  <way id="348553335" version="10" timestamp="2019-04-08T04:19:00Z" changeset="99992695" uid="9990114" user="The_Plateau">
-<nd ref="-14103"/>
-<nd ref="-31103"/>
-<nd ref="-32103"/>
-<nd ref="-33103"/>
-<nd ref="-34103"/>
-<nd ref="-35103"/>
-<nd ref="-36103"/>
-<nd ref="-37103"/>
-<nd ref="-38103"/>
-<nd ref="-39103"/>
+<nd ref="-41103"/>
+<nd ref="-43103"/>
+<nd ref="-44103"/>
+<nd ref="-45103"/>
+<nd ref="-46103"/>
+<nd ref="-47103"/>
+<nd ref="-48103"/>
+<nd ref="-49103"/>
+<nd ref="-50103"/>
+<nd ref="-51103"/>
 </way>
 
  </osm>

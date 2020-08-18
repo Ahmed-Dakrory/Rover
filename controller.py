@@ -112,7 +112,7 @@ while True:
 
     if queueNodesNewRight == None:
         print("No Path for on of the Paths")
-        sim.sendActionsToMicroController([],0,0,0, 0,0,255,gps.getGpsReadings()[3],addr,bus)
+        sim.sendActionsToMicroController(serialReader,[],0,0,0, 0,0,255,gps.getGpsReadings()[3],addr,bus)
     else:
         f= open("route.osm","w+")
 

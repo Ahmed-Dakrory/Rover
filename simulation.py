@@ -141,7 +141,7 @@ def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routing
             elif sendData:
                 totalPacket = sendActionsToMicroController(serialBus,totalPacketBefore, angleRover,gyroRover,actionDistance, angleAction,actionRate,ErrorInGps,FixMode,addr,bus)
                 totalPacketBefore = totalPacket
-                print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, Fix: %f, i: %f, all: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[3],indexCurrentTargetPoint,len(listOfPoints)))
+                print("AngleRover:%f, rate: %f, ActionDistance: %f, AngleAction: %f, Fix: %f, i: %f, all: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[3],indexCurrentTargetPoint,len(listOfPoints)))
 
 def sendActionsToMicroController(serialBus,totalPacketBefore, angleRover,gyroRover, actionDistance, angleAction,actionRate,BrakeValue,FixMode,addr,bus):
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue('#'),bus)
@@ -158,9 +158,11 @@ def sendActionsToMicroController(serialBus,totalPacketBefore, angleRover,gyroRov
     
     #Send AngleAction Steering
     TotalAction = angleAction + actionRate #Range = 250+180
-    SteeringAngle = int(toAnotherRange(TotalAction,-330,330,0,9000))
+    SteeringAngle = int(toAnotherRange(TotalAction,-180,180,0,9000))
     if SteeringAngle>9000:
         SteeringAngle = 9000
+    if SteeringAngle<-9000:
+        SteeringAngle = -9000
     SteeringAngleBytes = ConvertToBytes(SteeringAngle)
     
     #Send SpeedAction
@@ -198,9 +200,10 @@ def calculateControlAction(KpDistance,KpAngle,KpRate,Gps,listOfPoints,indexCurre
     currentTarget = [listOfPoints[indexCurrentTargetPoint][1],listOfPoints[indexCurrentTargetPoint][2]]
     distance = getDistanceFromLatLonInMeter(currentTarget,currPointGPS)
     # angle = deg2rad(calAngle(currentTarget,currPointGPS))
-    angle = (calAngle(currPointGPS,currentTarget))
+    # angle = (calAngle(currPointGPS,currentTarget))
+    angle = (calAngle(currentTarget,currPointGPS))
     
-    errorAngle = angle-angleRover
+    errorAngle = angleRover- angle
     angleAction = KpAngle * errorAngle
     # print("%s %s %s   %s %s %s %s" % (indexCurrentTargetPoint,distance,errorAngle,currPointGPS[0],currPointGPS[1],currentTarget[0],currentTarget[1]))
     
