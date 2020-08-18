@@ -73,11 +73,11 @@ while True:
                 angleNew = int(toAnotherRange(angleOld,-180,180,0,9000))
 
                 # SendDataOfType(addr,angleNew,bus,0)
-                SteeringAngleBytes = ConvertToBytes(angleNew+1)
-                RobotSpeedBytes = ConvertToBytes(angleNew+2)
-                BrakeValueBytes = (95+3)
-                totalPacket = [SteeringAngleBytes[0],SteeringAngleBytes[1],RobotSpeedBytes[0],RobotSpeedBytes[1],BrakeValueBytes]
-                SendDataOfType(addr,totalPacket,bus)
+                # SteeringAngleBytes = ConvertToBytes(angleNew+1)
+                # RobotSpeedBytes = ConvertToBytes(angleNew+2)
+                # BrakeValueBytes = (95+3)
+                # totalPacket = [SteeringAngleBytes[0],SteeringAngleBytes[1],RobotSpeedBytes[0],RobotSpeedBytes[1],BrakeValueBytes]
+                # SendDataOfType(addr,totalPacket,bus)
                 print("Heading angle: %s     %s    %s" % (angleOld,angleNew,gyroZ))
             
             #sleep(0.1)

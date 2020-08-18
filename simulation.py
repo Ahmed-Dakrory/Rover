@@ -90,6 +90,7 @@ def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routing
     sendData = True
     currPointGPS = routingClass.node(Gps.getGpsReadings()[1],Gps.getGpsReadings()[2])
     indexFirstTarget = len(listOfPoints) - 1
+    # indexFirstTarget = len(listOfPoints)
     indexSecondTarget = goToNextTargetOrNot(listOfPoints,Gps,indexFirstTarget)
     
     notReachEndPoint = True
@@ -140,7 +141,7 @@ def mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,Gps,routing
             elif sendData:
                 totalPacket = sendActionsToMicroController(serialBus,totalPacketBefore, angleRover,gyroRover,actionDistance, angleAction,actionRate,ErrorInGps,FixMode,addr,bus)
                 totalPacketBefore = totalPacket
-                # print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, Fix: %f, i: %f, all: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[3],indexCurrentTargetPoint,len(listOfPoints)))
+                print("AngleRover:%f, rate: %f, Distance: %f, AngleAction: %f, Fix: %f, i: %f, all: %f" %(angleRover,gyroRover,actionDistance, angleAction,Gps.getGpsReadings()[3],indexCurrentTargetPoint,len(listOfPoints)))
 
 def sendActionsToMicroController(serialBus,totalPacketBefore, angleRover,gyroRover, actionDistance, angleAction,actionRate,BrakeValue,FixMode,addr,bus):
     # sendArrayOfBytes(addr,convertNumberIntoAsciValue('#'),bus)
@@ -186,8 +187,8 @@ def sendActionsToMicroController(serialBus,totalPacketBefore, angleRover,gyroRov
 def goToNextTargetOrNot(listOfPoints,Gps,indexOfCurrentTarget):
     targetPoint = [listOfPoints[indexOfCurrentTarget][1],listOfPoints[indexOfCurrentTarget][2]]
     #Adjust this Parameter to get the best Performance
-    # print(getDistanceFromLatLonInMeter([Gps.getGpsReadings()[1],Gps.getGpsReadings()[2]],targetPoint))
-    if getDistanceFromLatLonInMeter([Gps.getGpsReadings()[1],Gps.getGpsReadings()[2]],targetPoint) < 0.1:
+    # print("%s %s %s %s" % (indexOfCurrentTarget,getDistanceFromLatLonInMeter([Gps.getGpsReadings()[1],Gps.getGpsReadings()[2]],targetPoint),targetPoint[0],targetPoint[1]))
+    if getDistanceFromLatLonInMeter([Gps.getGpsReadings()[1],Gps.getGpsReadings()[2]],targetPoint) < 0.5:
         del listOfPoints[indexOfCurrentTarget]
 
     return len(listOfPoints)-1
@@ -196,10 +197,12 @@ def calculateControlAction(KpDistance,KpAngle,KpRate,Gps,listOfPoints,indexCurre
     currPointGPS = [Gps.getGpsReadings()[1],Gps.getGpsReadings()[2]]
     currentTarget = [listOfPoints[indexCurrentTargetPoint][1],listOfPoints[indexCurrentTargetPoint][2]]
     distance = getDistanceFromLatLonInMeter(currentTarget,currPointGPS)
-    angle = deg2rad(calAngle(currPointGPS,currentTarget))
+    # angle = deg2rad(calAngle(currentTarget,currPointGPS))
+    angle = (calAngle(currPointGPS,currentTarget))
     
     errorAngle = angle-angleRover
     angleAction = KpAngle * errorAngle
+    # print("%s %s %s   %s %s %s %s" % (indexCurrentTargetPoint,distance,errorAngle,currPointGPS[0],currPointGPS[1],currentTarget[0],currentTarget[1]))
     
     actionRate = KpRate * gyroRover
     

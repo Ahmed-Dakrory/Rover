@@ -137,5 +137,6 @@ while True:
         
         print('Finish Routing')
         print('Start Navigation')
+        listOfPoints.reverse()
         sim.mainLoopForSendTheNeededLengthAndAngle(KpDistance,KpAngle,KpRate,gps,routingClass,listOfPoints,bus,addr,imu,serialReader)
 
