@@ -20,8 +20,8 @@ import time
 class GpsThreadReadings (threading.Thread):
     def __init__(self,GpsReadings):
         super(GpsThreadReadings , self).__init__(name="GPS thread")
-        self.serialCom = serial.Serial(port='/dev/ttyACM0',baudrate=115200)
-        #self.serialCom = serial.Serial(port='COM3',baudrate=115200)
+        # self.serialCom = serial.Serial(port='/dev/ttyACM0',baudrate=115200)
+        self.serialCom = serial.Serial(port='COM3',baudrate=115200)
         self.GpsReadings = GpsReadings
         self.GpsRun = True
         self.timeBefore = 0
@@ -67,7 +67,7 @@ class GpsThreadReadings (threading.Thread):
     def readGPS(self,angle,latAv2,longAv2,FixMode,hdop,error):
         data = self.serialCom.readline()
         GPS_Read = str(data)[2:-5]
-
+        error = 1000000
         try:
             
             msg = pynmea2.parse(GPS_Read)
@@ -109,8 +109,15 @@ class GpsThreadReadings (threading.Thread):
                 
         except:
             pass
+        if error < 0.3:
+            return [0,latAv2,longAv2,FixMode,hdop,error]
+        else:
+            if self.getDistanceFromLatLonInKm(latAv2,longAv2,self.GpsReadings[1],self.GpsReadings[2]) > 0.5:
+                return [0,latAv2,longAv2,FixMode,hdop,error]
+            else:
+                return [0,self.GpsReadings[1],self.GpsReadings[2],FixMode,hdop,error]
+
         #return [angle,latAv2,longAv2]
-        return [0,latAv2,longAv2,FixMode,hdop,error]
 
 
 
