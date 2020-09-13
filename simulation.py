@@ -161,8 +161,8 @@ def sendActionsToMicroController(serialBus,totalPacketBefore, angleRover,gyroRov
     SteeringAngle = int(toAnotherRange(TotalAction,-180,180,0,9000))
     if SteeringAngle>9000:
         SteeringAngle = 9000
-    if SteeringAngle<-9000:
-        SteeringAngle = -9000
+    if SteeringAngle<0:
+        SteeringAngle = 0
     SteeringAngleBytes = ConvertToBytes(SteeringAngle)
     
     #Send SpeedAction
