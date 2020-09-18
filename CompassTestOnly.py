@@ -1,4 +1,4 @@
-from MpuRm3100 import IMU
+from imuDev.MpuRm3100 import IMU
 import time
 
 DRDY = 27 #GPIO 27
