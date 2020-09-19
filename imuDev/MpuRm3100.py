@@ -57,7 +57,7 @@ class IMU (threading.Thread):
         self.pitch = 0
         self.roll = 0
         self.ThetaYaw = 0
-        self.Alfa = 0.1
+        self.Alfa = 0.8
         self.HeadingNew = 0
 
 
@@ -114,7 +114,7 @@ class IMU (threading.Thread):
                                                 
                 
                         self.ThetaYaw = self.Alfa * self.ThetaYaw + (1 - self.Alfa) * self.HeadingNew
-                        self.Readings ={'Roll':self.roll * 180 /math.pi,'Pitch':self.pitch* 180 /math.pi,'Yaw':self.HeadingNew }
+                        self.Readings ={'Roll':self.roll * 180 /math.pi,'Pitch':self.pitch* 180 /math.pi,'Yaw':self.ThetaYaw }
                     else:
                         self.Readings = None
             except:
